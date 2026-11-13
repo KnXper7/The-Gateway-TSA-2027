@@ -11,17 +11,18 @@
       - The game fills the whole browser window on a black page.
       - Rendering is capped at 1 pixel per CSS pixel. On a Retina/HiDPI laptop the default (2x) draws four times
         as many pixels every frame, which is the biggest single cost for a browser game.
-      - A quiet loading bar in the game's colours instead of the Unity footer.
+      - "Loading..." and a progress bar in the game's colours instead of the Unity footer.
+      - Build files are named by content hash (set in the Web build profile), so a browser can never mix files
+        from an old build with a new one after an update.
     -->
     <style>
       html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
       #unity-canvas { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; background: #000; outline: none; }
       #loading { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
                  gap: 22px; color: #e8f2ff; font: 600 15px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif; letter-spacing: 0.32em; }
-      #loading .title { font-size: 34px; font-weight: 300; letter-spacing: 0.42em; }
+      #loading .title { font-size: 22px; font-weight: 300; letter-spacing: 0.3em; }
       #loading .track { width: min(420px, 70vw); height: 3px; background: rgba(140, 215, 255, 0.18); }
       #loading .fill { width: 0%; height: 100%; background: #8cd8ff; transition: width 0.2s; }
-      #loading .hint { font-weight: 400; letter-spacing: 0.12em; opacity: 0.55; font-size: 13px; }
       #warning { position: fixed; left: 50%; top: 12px; transform: translateX(-50%); max-width: 80vw; color: #000; font: 14px system-ui, sans-serif; }
       #fullscreen { position: fixed; right: 14px; bottom: 12px; width: 34px; height: 34px; border: 1px solid rgba(140, 215, 255, 0.4);
                     background: rgba(5, 10, 16, 0.6); color: #8cd8ff; font: 18px system-ui, sans-serif; cursor: pointer; opacity: 0.55; display: none; }
@@ -31,9 +32,8 @@
   <body>
     <canvas id="unity-canvas" tabindex="-1"></canvas>
     <div id="loading">
-      <div class="title">THE GATEWAY</div>
+      <div class="title">Loading...</div>
       <div class="track"><div class="fill" id="fill"></div></div>
-      <div class="hint">Loading. The first visit downloads the game once; after that it starts quickly.</div>
     </div>
     <div id="warning"></div>
     <button id="fullscreen" title="Full screen">⤢</button>
@@ -50,12 +50,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/webtest.loader.js";
+      var loaderUrl = buildUrl + "/6b9343e10c8123a2c1aac183a7300f50.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/webtest.data.unityweb",
-        frameworkUrl: buildUrl + "/webtest.framework.js.unityweb",
-        codeUrl: buildUrl + "/webtest.wasm.unityweb",
+        dataUrl: buildUrl + "/ae0ce7973301d4469e221320da6ccf42.data.unityweb",
+        frameworkUrl: buildUrl + "/2861c118cda85d8358197a54037a2e25.framework.js.unityweb",
+        codeUrl: buildUrl + "/e33bda96f5dd5a305df7454c6110948f.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "TSA Video Game Design 2027",
