@@ -12,8 +12,10 @@
       - Rendering is capped at 1 pixel per CSS pixel. On a Retina/HiDPI laptop the default (2x) draws four times
         as many pixels every frame, which is the biggest single cost for a browser game.
       - "Loading..." and a progress bar in the game's colours instead of the Unity footer.
-      - Build files are named by content hash (set in the Web build profile), so a browser can never mix files
-        from an old build with a new one after an update.
+      - Progressive asset loading (Web build profile): only what the menu needs downloads before the game starts;
+        later levels stream in the background while you play.
+      - The engine's code files are requested with a version stamp taken from when this page was published, so after
+        an update a browser never runs new code with an old cached engine (data files are re-checked by Unity's cache).
     -->
     <style>
       html, body { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
@@ -49,13 +51,16 @@
         if (type != "error") setTimeout(function () { banner.removeChild(div); }, 5000);
       }
 
+      // Version stamp for this deployment (see the note at the top).
+      var stamp = "?v=" + (Date.parse(document.lastModified) || Date.now());
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/6b9343e10c8123a2c1aac183a7300f50.loader.js";
+      var loaderUrl = buildUrl + "/webtest.loader.js" + stamp;
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/ae0ce7973301d4469e221320da6ccf42.data.unityweb",
-        frameworkUrl: buildUrl + "/2861c118cda85d8358197a54037a2e25.framework.js.unityweb",
-        codeUrl: buildUrl + "/e33bda96f5dd5a305df7454c6110948f.wasm.unityweb",
+        primaryDataUrls: ["globalgamemanagers","globalgamemanagers.assets","level0","resources.assets","resources.resource","Resources/unity_builtin_extra","RuntimeInitializeOnLoads.json","ScriptingAssemblies.json","sharedassets0.assets","boot.config","Il2CppData/Metadata/global-metadata.dat","Resources/unity default resources"],
+        secondaryDataUrls: ["level1","sharedassets1.assets","level2","sharedassets2.assets","level3","sharedassets3.assets","level4","sharedassets4.assets","level5","sharedassets5.assets","level6","sharedassets6.assets","level7","sharedassets7.assets","level8","sharedassets8.assets","level9","sharedassets9.assets"],
+        frameworkUrl: buildUrl + "/webtest.framework.js",
+        codeUrl: buildUrl + "/webtest.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "TSA Video Game Design 2027",
@@ -64,6 +69,11 @@
         // One rendered pixel per CSS pixel, even on Retina screens (see the note at the top).
         devicePixelRatio: 1,
       };
+      // Only the engine's code files get the stamp. The data files keep their plain names (with progressive loading
+      // Unity uses them as file names), and Unity's data cache re-checks them with the server on every launch.
+      ["frameworkUrl", "codeUrl", "symbolsUrl"].forEach(function (k) {
+        if (typeof config[k] === "string") config[k] += stamp;
+      });
 
       var script = document.createElement("script");
       script.src = loaderUrl;
